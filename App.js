@@ -2,14 +2,49 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import AddIntoStack from './routes/routes';
+import * as Font from "expo-font";
+import AppLoading from "expo-app-loading";
+
+const fontConfig = {
+  "light-font": require("./fonts/ProximaNovaThin.otf"),
+  "normal-font": require("./fonts/ProximaNovaRegular.otf"),
+  "bold-font": require("./fonts/ProximaNovaBold.otf")
+};
+
+export default class App  extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+      fontsLoaded: false
+    };
+  }
+
+  async loadFonts(){
+    await Font.loadAsync(fontConfig)
+    this.setState({fontsLoaded:true})
+  }
+
+  async componentDidMount(){
+    this.loadFonts();
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  render(){
+    if(this.state.fontsLoaded){
+      return(
+        <AddIntoStack/>
+      );
+    }
+    else{
+      return(
+        <AppLoading/>
+      );
+    }
+  }
 }
+
 
 const styles = StyleSheet.create({
   container: {
