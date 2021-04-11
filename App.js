@@ -27,8 +27,6 @@ export default class App  extends React.Component {
 
   async componentDidMount(){
     this.loadFonts();
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
   }
 
   render(){
