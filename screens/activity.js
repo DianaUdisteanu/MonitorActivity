@@ -1,11 +1,50 @@
 import React from 'react';
-import {Image, View, Text, ImageBackground, TouchableOpacity} from 'react-native';
+import {Image, View, Text, ImageBackground, TouchableOpacity, LogBox} from 'react-native';
+
+LogBox.ignoreAllLogs();
+LogBox.ignoreLogs(['Warning: ...']);
+
+import * as firebase from "firebase";
 
 export default class Activity extends React.Component{
     constructor(){
         super();
-        this.state={};
+        this.state={
+            pulseFirebase:"",
+            stepsFirebase:""
+        };
+        this.pulse = "";
+        this.steps = "";
     };
+
+    componentDidMount(){
+        this.fetchingPulseFromFirebase();
+        this.fetchingStepsFromFirebase();
+    }
+
+    fetchingStepsFromFirebase = () => {
+        setInterval(() => {
+            firebase.database().ref('/Steps').once('value').then((snapshot) => {
+                var stepsVal = snapshot.val();
+                this.steps = stepsVal;
+                this.setState({
+                    stepsFirebase: this.steps
+                })
+            })
+     }, 3000);
+    }
+
+    fetchingPulseFromFirebase = () => {
+        setInterval(() => {
+            firebase.database().ref('/Pulse').once('value').then((snapshot) => {
+                var pulseVal = snapshot.val();
+                this.pulse = pulseVal;
+                this.setState({
+                    pulseFirebase: this.pulse
+                })
+            })
+     }, 3000);
+    }
 
     render(){
         return(
@@ -23,12 +62,12 @@ export default class Activity extends React.Component{
                             <View style={{flexDirection:'column', alignItems:'center', justifyContent:'space-evenly'}}>
                                 <Image source={require("../app/images/icon_steps.png")} style={{width:20, height:20}}/>
                                 <Text style={{fontFamily:"normal-font", fontSize:20, color:'#84ACCE'}}>steps</Text>
-                                <Text style={{fontFamily:"bold-font", fontSize:40, color:'#84ACCE'}}>120</Text>
+                                <Text style={{fontFamily:"bold-font", fontSize:40, color:'#84ACCE'}}>{this.state.stepsFirebase.replace("\n",'')}</Text>
                             </View>
                             <View style={{flexDirection:'column', alignItems:'center', justifyContent:'space-evenly'}}>
                                 <Image source={require("../app/images/icon_heart.png")} style={{width:20, height:20}}/>
                                 <Text style={{fontFamily:"normal-font", fontSize:20, color:'#84ACCE'}}>pulse</Text>
-                                <Text style={{fontFamily:"bold-font", fontSize:40, color:'#84ACCE'}}>80</Text>
+                                <Text style={{fontFamily:"bold-font", fontSize:40, color:'#84ACCE'}}>{this.state.pulseFirebase.replace("\n",'')}</Text>
                             </View>
                         </View>
                         <View style={{position:'absolute', bottom:"45%", width:"100%"}}>
