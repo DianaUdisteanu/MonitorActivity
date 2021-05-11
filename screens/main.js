@@ -1,5 +1,8 @@
 import React from 'react';
-import {Image, View, Text, ImageBackground, TouchableOpacity} from 'react-native';
+import {Image, View, Text, ImageBackground, TouchableOpacity, LogBox} from 'react-native';
+
+LogBox.ignoreAllLogs();
+LogBox.ignoreLogs(['Warning: ...']);
 
 export default class Main extends React.Component{
     constructor(){
